@@ -13,7 +13,7 @@ app = typer.Typer()
 @app.command()
 def init(
     db_path: str = typer.Option(
-        str(database.DEFAULT_FILE_PATH),
+        str(database.DEFAULT_DB_FILE_PATH),
         "--db-path",
         "-db",
         prompt="to-do database location?"
@@ -35,7 +35,7 @@ def init(
         )
         raise typer.Exit(1)
     else:
-        typer.secho(f"The to-do database is {db_path}", fg=typer.color.GREEN)
+        typer.secho(f"The to-do database is {db_path}", fg=typer.colors.GREEN)
 
 def _version_callback(value: bool) -> None:
     if value:

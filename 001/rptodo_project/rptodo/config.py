@@ -32,6 +32,7 @@ def _init_config_file() -> int:
         CONFIG_FILE_PATH.touch(exist_ok=True)
     except OSError:
         return FILE_ERROR
+    print(f"Created config file here: {CONFIG_FILE_PATH}")
     return SUCCESS
 
 def _create_database(db_path: str) -> int:
