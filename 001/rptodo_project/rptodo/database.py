@@ -28,7 +28,7 @@ def init_database(db_path: Path) -> int:
 
 class DBResponse(NamedTuple):
     todo_list: List[Dict[str, Any]]
-    errors: int
+    error: int
 
 class DatabaseHandler:
     def __init__(self, db_path: Path) -> None:
