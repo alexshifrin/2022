@@ -7,7 +7,7 @@ from typing import List, Optional
 import typer
 
 from rptodo import (
-    ERRORS, Todoer, __app_name__, __version__, config, database, rptodo
+    ERRORS, __app_name__, __version__, config, database, rptodo
 )
 
 app = typer.Typer()
