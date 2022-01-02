@@ -27,3 +27,23 @@ def mock_json_file(tmp_path):
     with db_file.open("w") as db:
         json.dump(todo, db, indent=4)
     return db_file
+
+test_data1 = {
+    "description": ["Clean", "the", "house"],
+    "priority": 1,
+    "todo": {
+        "Description": "Clean the house.",
+        "Priority": 1,
+        "Done": False,
+    },
+}
+
+test_data2 = {
+    "description": ["Wash the car"],
+    "priority": 2,
+    "todo": {
+        "Description": "Wash the car.",
+        "Priority": 2,
+        "Done": False,
+    },
+}
