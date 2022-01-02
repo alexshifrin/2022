@@ -168,6 +168,28 @@ def remove(
         else:
             typer.echo("Operation canceled")
 
+@app.command(name="clear")
+def remove_all(
+    force: bool = typer.Option(
+        ...,
+        prompt="Delete all to-dos?",
+        help="Force deletion without confirmation.",
+    ),
+) -> None:
+    """Remove all to-dos."""
+    todoer = get_todoer()
+    if force:
+        error = todoer.remove_all().error
+        if error:
+            typer.secho(
+                f'Removing to-dos failed with "{ERRORS[error]}"',
+                fg=typer.colors.RED,
+            )
+            raise typer.Exit(1)
+        else:
+            typer.secho("All to-dos were remove", fg=typer.colors.GREEN)
+    else:
+        typer.echo("Operation canceled")
 
 def _version_callback(value: bool) -> None:
     if value:
