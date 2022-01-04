@@ -3,6 +3,7 @@ reveal_type(math.pi)
 
 # can inspect with `circumference.__annotations__`
 def circumference(radius: float) -> float:
+    # type: (float) -> float
     return 2 * math.pi * radius
 
 # can inspect on module level with `__annotations__`
