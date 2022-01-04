@@ -1,0 +1,17 @@
+blessings==1.7
+bpython==0.22.1
+certifi==2021.10.8
+charset-normalizer==2.0.9
+curtsies==0.3.10
+cwcwidth==0.1.6
+greenlet==1.1.2
+idna==3.3
+mypy==0.930
+mypy-extensions==0.4.3
+Pygments==2.11.1
+pyxdg==0.27
+requests==2.27.0
+six==1.16.0
+tomli==2.0.0
+typing_extensions==4.0.1
+urllib3==1.26.7
