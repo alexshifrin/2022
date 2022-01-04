@@ -7,7 +7,7 @@ Deck = List[Card]
 SUITS = "♠ ♡ ♢ ♣".split()
 RANKS = "2 3 4 5 6 7 8 9 10 J Q K A".split()
 
-def create_deck(shuffle: bool =False) -> Deck:
+def create_deck(shuffle: bool = False) -> Deck:
     """Create a new deck of 52 cards"""
     deck = [(s, r) for r in RANKS for s in SUITS]
     if shuffle:
@@ -27,6 +27,7 @@ def play():
     for name, cards in hands.items():
         card_str = " ".join(f"{s}{r}" for (s, r) in cards)
         print(f"{name}: {card_str}")
+
 
 if __name__ == "__main__":
     play()
