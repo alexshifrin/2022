@@ -104,3 +104,15 @@ class PlayingCard:
 queen_of_hearts = PlayingCard('Q', '♡')
 ace_of_spades = PlayingCard('A', '♠')
 print(ace_of_spades > queen_of_hearts)
+
+from dataclasses import dataclass
+
+@dataclass
+class Position:
+    name: str
+    lon: float
+    lat: float
+
+@dataclass
+class Capital(Position):
+    country: str
