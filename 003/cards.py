@@ -1,5 +1,5 @@
 from dataclasses import dataclass, make_dataclass
-from typing import Any
+from typing import Any, List
 from math import asin, cos, radians, sin, sqrt
 
 @dataclass
@@ -50,3 +50,13 @@ blah = Anything(None)
 blah2 = Anything("Alex!")
 
 print(blah, blah2)
+
+@dataclass
+class Deck:
+    cards: List[PlayingCard]
+
+queen_of_hearts = PlayingCard('Q', 'Hearts')
+ace_of_spades = PlayingCard('A', 'Spades')
+two_cards = Deck([queen_of_hearts, ace_of_spades])
+
+print(two_cards)
