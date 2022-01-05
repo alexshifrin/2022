@@ -1,4 +1,4 @@
-from dataclasses import dataclass, make_dataclass, field
+from dataclasses import dataclass, make_dataclass, field, fields
 from typing import Any, List
 from math import asin, cos, radians, sin, sqrt
 
@@ -20,8 +20,8 @@ print(ace_of_spades2)
 @dataclass
 class Position:
     name: str
-    lon: float = 0.0
-    lat: float = 0.0
+    lon: float = field(default=0.0, metadata={'unit': 'degrees'})
+    lat: float = field(default=0.0, metadata={'unit': 'degrees'})
 
     def distance_to(self, other):
         r = 6371  # Earth radius in kilometers
@@ -72,3 +72,6 @@ class Deck:
     cards: List[PlayingCard] = field(default_factory=make_french_deck)
 
 print(Deck())
+
+# priint metadata from Position object `seattle`
+print(fields(seattle)[2].metadata['unit'])
