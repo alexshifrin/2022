@@ -1,4 +1,4 @@
-from dataclasses import dataclass, make_dataclass
+from dataclasses import dataclass, make_dataclass, field
 from typing import Any, List
 from math import asin, cos, radians, sin, sqrt
 
@@ -60,3 +60,15 @@ ace_of_spades = PlayingCard('A', 'Spades')
 two_cards = Deck([queen_of_hearts, ace_of_spades])
 
 print(two_cards)
+
+RANKS = '2 3 4 5 6 7 8 9 10 J Q K A'.split()
+SUITS = '♣ ♢ ♡ ♠'.split()
+
+def make_french_deck():
+    return [PlayingCard(r, s) for s in SUITS for r in RANKS]
+
+@dataclass
+class Deck:
+    cards: List[PlayingCard] = field(default_factory=make_french_deck)
+
+print(Deck())
