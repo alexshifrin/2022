@@ -7,7 +7,10 @@ class PlayingCard:
     rank: str
     suit: str
 
-ace_of_spades = PlayingCard('Ace', 'Spades')
+    def __str__(self):
+        return f'{self.rank}{self.suit}'
+
+ace_of_spades = PlayingCard('A', '♠')
 
 print(ace_of_spades)
 
