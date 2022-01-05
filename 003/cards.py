@@ -1,4 +1,5 @@
 from dataclasses import dataclass, make_dataclass
+from typing import Any
 
 @dataclass
 class PlayingCard:
@@ -28,3 +29,12 @@ print(seattle)
 nowhere = Position("Nowhere")
 
 print(nowhere)
+
+@dataclass
+class Anything:
+    thing: Any
+
+blah = Anything(None)
+blah2 = Anything("Alex!")
+
+print(blah, blah2)
