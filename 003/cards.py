@@ -74,6 +74,10 @@ def make_french_deck():
 class Deck:
     cards: List[PlayingCard] = field(default_factory=make_french_deck)
 
+    def __repr__(self):
+        cards = ', '.join(f"{c!s}" for c in self.cards)
+        return f"{self.__class__.__name__}({cards})"
+
 print(Deck())
 
 # priint metadata from Position object `seattle`
