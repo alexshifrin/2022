@@ -1,8 +1,30 @@
 from dataclasses import dataclass
+from typing import Optional
 
 from fastapi import FastAPI
+from pydantic import BaseModel
 
 app = FastAPI()
+
+"""
+{
+    "name": "Foo",
+    "description": "An optional description",
+    "price": 45.2,
+    "tax": 3.5
+}
+OR
+{
+    "name": "Foo",
+    "price": 45.2
+}
+are valid JSON because of Optional type hint and None default
+"""
+class Item(BaseModel):
+    name: str
+    description: Optional[str] = None
+    price: float
+    tax: Optional[float] = None
 
 @dataclass
 class Message:
@@ -26,3 +48,7 @@ async def read_user_me():
 @app.get("/users/{user_id}")
 async def read_user(user_id: int):
     return {"user_id": user_id}
+
+@app.post("/items/")
+async def create_item(item: Item):
+    return item
