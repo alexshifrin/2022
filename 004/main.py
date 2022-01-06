@@ -16,6 +16,5 @@ async def root():
     return msg
 
 @app.get("/item/{item_id}")
-async def show_item(item_id):
+async def show_item(item_id: int):
     return {"item_id": item_id}
-    
