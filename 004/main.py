@@ -1,7 +1,16 @@
+from dataclasses import dataclass
+
 from fastapi import FastAPI
 
 app = FastAPI()
 
+@dataclass
+class Message:
+    msg: str
+    val: int
+
+msg = Message("Hello, World!", 100)
+
 @app.get("/")
 async def root():
-    return {"message": "Hello, World!"}
+    return msg
