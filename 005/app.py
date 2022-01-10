@@ -2,9 +2,10 @@
 
 from dash import Dash, dcc, html
 import pandas as pd
+import numpy as np
 
 data = pd.read_csv("avocado.csv")
-data = data.query("type == 'conventional' and region == 'Albany'")
+# data = data.query("type == 'conventional' and region == 'Albany'")
 data["Date"] = pd.to_datetime(data["Date"], format="%Y-%m-%d")
 data.sort_values("Date", inplace=True)
 
@@ -16,7 +17,7 @@ external_stylesheets = [
     },
 ]
 
-app = Dash(__name__)
+app = Dash(__name__, external_stylesheets=external_stylesheets)
 app.title = "Avocado Analytics: Understand Your Avocados!"
 
 app.layout = html.Div(
@@ -35,89 +36,44 @@ app.layout = html.Div(
             ],
             className="header",
         ),
-        # dcc.Graph(
-        #     figure={
-        #         "data": [
-        #             {
-        #                 "x": data["Date"],
-        #                 "y": data["AveragePrice"],
-        #                 "type": "lines",
-        #             },
-        #         ],
-        #         "layout": {"title": "Average Price of Avocados"},
-        #     },
-        # ),
-        # dcc.Graph(
-        #     figure={
-        #         "data": [
-        #             {
-        #                 "x": data["Date"],
-        #                 "y": data["Total Volume"],
-        #                 "type": "lines",
-        #             },
-        #         ],
-        #         "layout": {"title": "Avocados Sold"},
-        #     },
-        # ),
+        html.Div(
+            children=[
+                html.Div(
+                    children=[
+                        html.Div(children="Region", className="menu-title"),
+                        dcc.Dropdown(
+                            id="region-filter",
+                            options=[
+                                {"label": region, "value": region}
+                                for region in np.sort(data.region.unique())
+                            ],
+                            value="Albany",
+                            clearable=False,
+                            className="dropdown",
+                        ),
+                    ],
+                ),
+            ],
+            className="menu",
+        ),
         html.Div(
             children=[
                 html.Div(
                     children=dcc.Graph(
-                        id="price-chart",
-                        config={"displayModeBar": False},
-                        figure={
-                            "data": [
-                                {
-                                    "x": data["Date"],
-                                    "y": data["AveragePrice"],
-                                    "type": "lines",
-                                    "hovertemplate": "$%{y:.2f}<extra></extra>",
-                                },
-                            ],
-                            "layout": {
-                                "title": {
-                                    "text": "Average Price of Avocados",
-                                    "x": 0.05,
-                                    "xanchor": "left",
-                                },
-                                "xaxis": {"fixedrange": True},
-                                "yaxis": {"tickprefix": "$", "fixedrange": True},
-                                "colorway": ["#17B897"]
-                            },
-                        },
+                        id="price-chart", config={"displayModeBar": False},
                     ),
-                    className="card"
+                    className="card",
                 ),
                 html.Div(
                     children=dcc.Graph(
-                        id="volume-chart",
-                        config={"displayModeBar": False},
-                        figure={
-                            "data": [
-                                {
-                                    "x": data["Date"],
-                                    "y": data["Total Volume"],
-                                    "type": "lines",
-                                },
-                            ],
-                            "layout": {
-                                "title": {
-                                    "text": "Avocados Sold",
-                                    "x": 0.05,
-                                    "xanchor": "left",
-                                },
-                                "xaxis": {"fixedrange": True},
-                                "yaxis": {"fixedrange": True},
-                                "colorway": ["#E12D39"]
-                            },
-                        },
+                        id="volume-chart", config={"displayModeBar": False},
                     ),
                     className="card",
-                )
+                ),
             ],
             className="wrapper",
         ),
-    ],
+    ]
 )
 
 if __name__ == "__main__":
