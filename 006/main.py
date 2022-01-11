@@ -18,9 +18,11 @@ my_posts = [
 ]
 
 def _find_post(id):
-    for post in my_posts:
+    for index, post in enumerate(my_posts):
         if post["id"] == id:
-            return post
+            return (index, post)
+    else:
+        return (None, None)
 
 @app.get("/")
 def root():
@@ -39,7 +41,7 @@ def create_posts(post: Post):
 
 @app.get("/posts/{id}")
 def get_post(id: int):
-    post = _find_post(id)
+    index, post = _find_post(id)
     if not post:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -49,13 +51,28 @@ def get_post(id: int):
 
 @app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(id: int):
-    deleted_post = _find_post(id)
+    index, deleted_post = _find_post(id)
     if not deleted_post:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Post with id {id} not found or deleted",
         )
     global my_posts
-    my_posts = [post for post in my_posts if post["id"] != id]
+    my_posts.pop(index)
+    # my_posts = [post for post in my_posts if post["id"] != id]
     return Response(status_code=status.HTTP_204_NO_CONTENT)
-    
+
+@app.put("/posts/{id}")
+def update_post(id: int, post: Post):
+    index, updated_post = _find_post(id)
+    if not update_post:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Post with {id} not found to update",
+        )
+    post_dict = post.dict()
+    post_dict["id"] = id
+    global my_posts
+    my_posts[index] = post_dict
+    return {"message": "updated post!", "post": post}
+
