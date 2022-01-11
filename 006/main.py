@@ -1,6 +1,8 @@
+from os import stat
 from typing import Optional
 from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel
+from starlette.responses import Response
 
 app = FastAPI()
 
@@ -44,3 +46,16 @@ def get_post(id: int):
             detail=f"Post with id {id} not found",
         )
     return {"data": post}
+
+@app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_post(id: int):
+    deleted_post = _find_post(id)
+    if not deleted_post:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Post with id {id} not found or deleted",
+        )
+    global my_posts
+    my_posts = [post for post in my_posts if post["id"] != id]
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    
