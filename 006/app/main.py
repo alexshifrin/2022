@@ -1,8 +1,12 @@
+import time
 from os import stat
 from typing import Optional
-from fastapi import FastAPI, HTTPException, status
+
+import psycopg2
+from psycopg2.extras import RealDictCursor
 from pydantic import BaseModel
 from starlette.responses import Response
+from fastapi import FastAPI, HTTPException, status
 
 app = FastAPI()
 
@@ -10,7 +14,24 @@ class Post(BaseModel):
     title: str
     content: str
     published: bool = True
-    rating: Optional[int] = None
+
+while True:
+    try:
+        conn = psycopg2.connect(
+            host="localhost",
+            database="fastapi",
+            user="shifty",
+            password="",
+            cursor_factory=RealDictCursor
+        )
+        cursor = conn.cursor()
+        print("Database connection was succesful!")
+        break
+    except Exception as error:
+        print("Connection to database failed!")
+        print("Error: ", error)
+        time.sleep(2)
+
 
 my_posts = [
     {"title": "post 1 title", "content": "post 1 content", "id": 1},
