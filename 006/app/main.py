@@ -45,16 +45,19 @@ def _find_post(id):
     else:
         return (None, None)
 
+# GET root
 @app.get("/")
 def root():
     return {"message": "root"}
 
+# GET /posts
 @app.get("/posts")
 def get_posts():
     cursor.execute("""SELECT * FROM posts;""")
     posts = cursor.fetchall()
     return {"data": posts}
 
+# POST /posts
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
 def create_posts(post: Post):
     cursor.execute(
@@ -65,16 +68,21 @@ def create_posts(post: Post):
     conn.commit()
     return {"data": new_post}
 
+# GET /posts/{id}
 @app.get("/posts/{id}")
 def get_post(id: int):
-    index, post = _find_post(id)
+    cursor.execute("""SELECT * FROM posts WHERE id = %s""", (id,))
+    post = cursor.fetchone()
+
     if not post:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Post with id {id} not found",
         )
+
     return {"data": post}
 
+# DELETE /posts/{id}
 @app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(id: int):
     index, deleted_post = _find_post(id)
@@ -88,6 +96,7 @@ def delete_post(id: int):
     # my_posts = [post for post in my_posts if post["id"] != id]
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
+# PUT /posts/{id}
 @app.put("/posts/{id}")
 def update_post(id: int, post: Post):
     index, updated_post = _find_post(id)
