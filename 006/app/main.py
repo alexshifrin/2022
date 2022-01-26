@@ -53,7 +53,7 @@ def root():
 # GET /posts
 @app.get("/posts")
 def get_posts():
-    cursor.execute("""SELECT * FROM posts;""")
+    cursor.execute("""SELECT * FROM posts ORDER BY id ASC;""")
     posts = cursor.fetchall()
     return {"data": posts}
 
@@ -61,7 +61,7 @@ def get_posts():
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
 def create_posts(post: Post):
     cursor.execute(
-        """INSERT INTO posts (title, content, published) VALUES (%s, %s, %s) RETURNING *""",
+        """INSERT INTO posts (title, content, published) VALUES (%s, %s, %s) RETURNING *;""",
         (post.title, post.content, post.published)
     )
     new_post = cursor.fetchone()
@@ -71,7 +71,7 @@ def create_posts(post: Post):
 # GET /posts/{id}
 @app.get("/posts/{id}")
 def get_post(id: int):
-    cursor.execute("""SELECT * FROM posts WHERE id = %s""", (id,))
+    cursor.execute("""SELECT * FROM posts WHERE id = %s;""", (id,))
     post = cursor.fetchone()
 
     if not post:
@@ -85,29 +85,44 @@ def get_post(id: int):
 # DELETE /posts/{id}
 @app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(id: int):
-    index, deleted_post = _find_post(id)
+    # index, deleted_post = _find_post(id)
+    # if not deleted_post:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_404_NOT_FOUND,
+    #         detail=f"Post with id {id} not found or deleted",
+    #     )
+    # global my_posts
+    # my_posts.pop(index)
+    # # my_posts = [post for post in my_posts if post["id"] != id]
+    # return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+    cursor.execute("""DELETE FROM posts WHERE id = %s RETURNING *;""", (id,))
+    deleted_post = cursor.fetchone()
+    conn.commit()
+
     if not deleted_post:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Post with id {id} not found or deleted",
         )
-    global my_posts
-    my_posts.pop(index)
-    # my_posts = [post for post in my_posts if post["id"] != id]
+    
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 # PUT /posts/{id}
 @app.put("/posts/{id}")
 def update_post(id: int, post: Post):
-    index, updated_post = _find_post(id)
-    if not update_post:
+    cursor.execute(
+        """UPDATE posts SET title = %s, content = %s, published = %s WHERE id = %s RETURNING *;""",
+        (post.title, post.content, post.published, id)
+    )
+    updated_post = cursor.fetchone()
+    conn.commit()
+
+    if updated_post is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Post with {id} not found to update",
         )
-    post_dict = post.dict()
-    post_dict["id"] = id
-    global my_posts
-    my_posts[index] = post_dict
-    return {"message": "updated post!", "post": post}
+
+    return {"message": "updated post!", "post": updated_post}
 
