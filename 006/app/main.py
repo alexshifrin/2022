@@ -4,9 +4,13 @@ from typing import Optional
 
 import psycopg2
 from psycopg2.extras import RealDictCursor
+
 from pydantic import BaseModel
 from starlette.responses import Response
-from fastapi import FastAPI, HTTPException, status
+
+from fastapi import FastAPI, HTTPException, status, Depends
+from sqlalchemy.orm import Session
+
 from . import models
 from .database import SessionLocal, engine
 
@@ -137,3 +141,6 @@ def update_post(id: int, post: Post):
 
     return {"message": "updated post!", "post": updated_post}
 
+@app.get("/sqlalchemy")
+def test_posts(db: Session = Depends(get_db)):
+    return {"status": "success"}
