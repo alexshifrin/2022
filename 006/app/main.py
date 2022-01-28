@@ -12,7 +12,8 @@ from fastapi import FastAPI, HTTPException, status, Depends
 from sqlalchemy.orm import Session
 
 from . import models
-from .database import SessionLocal, engine, get_db
+from .database import engine, get_db
+
 
 models.Base.metadata.create_all(bind=engine)
 
