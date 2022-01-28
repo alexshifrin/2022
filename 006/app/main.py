@@ -12,16 +12,9 @@ from fastapi import FastAPI, HTTPException, status, Depends
 from sqlalchemy.orm import Session
 
 from . import models
-from .database import SessionLocal, engine
+from .database import SessionLocal, engine, get_db
 
 models.Base.metadata.create_all(bind=engine)
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 app = FastAPI()
 
