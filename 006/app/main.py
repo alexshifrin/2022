@@ -61,9 +61,10 @@ def root():
 
 # GET /posts
 @app.get("/posts")
-def get_posts():
-    cursor.execute("""SELECT * FROM posts ORDER BY id ASC;""")
-    posts = cursor.fetchall()
+def get_posts(db: Session = Depends(get_db)):
+    # cursor.execute("""SELECT * FROM posts ORDER BY id ASC;""")
+    # posts = cursor.fetchall()
+    posts = db.query(models.Post).all()
     return {"data": posts}
 
 # POST /posts
