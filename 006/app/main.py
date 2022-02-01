@@ -137,4 +137,6 @@ def update_post(id: int, post: Post):
 
 @app.get("/sqlalchemy")
 def test_posts(db: Session = Depends(get_db)):
-    return {"status": "success"}
+    posts = db.query(models.Post).all()
+    # print(db.query(models.Post)) = "SELECT * FROM posts;"
+    return {"data": posts}
