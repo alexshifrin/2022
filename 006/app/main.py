@@ -13,18 +13,13 @@ from starlette.responses import Response
 from fastapi import FastAPI, HTTPException, status, Depends
 from sqlalchemy.orm import Session
 
-from . import models
+from . import models, schemas
 from .database import engine, get_db
 
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-
-class Post(BaseModel):
-    title: str
-    content: str
-    published: bool = True
 
 while True:
     try:
@@ -71,7 +66,7 @@ def get_posts(db: Session = Depends(get_db)):
 
 # POST /posts
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
-def create_posts(post: Post, db: Session = Depends(get_db)):
+def create_posts(post: schemas.Post, db: Session = Depends(get_db)):
     # cursor.execute(
     #     """INSERT INTO posts (title, content, published) VALUES (%s, %s, %s) RETURNING *;""",
     #     (post.title, post.content, post.published)
@@ -129,7 +124,7 @@ def delete_post(id: int, db: Session = Depends(get_db)):
 
 # PUT /posts/{id}
 @app.put("/posts/{id}")
-def update_post(id: int, post: Post, db: Session = Depends(get_db)):
+def update_post(id: int, post: schemas.Post, db: Session = Depends(get_db)):
     # cursor.execute(
     #     """UPDATE posts SET title = %s, content = %s, published = %s WHERE id = %s RETURNING *;""",
     #     (post.title, post.content, post.published, id)
