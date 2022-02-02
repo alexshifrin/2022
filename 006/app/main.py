@@ -1,3 +1,4 @@
+from multiprocessing import synchronize
 from nis import match
 import time
 from os import stat
@@ -100,7 +101,7 @@ def get_post(id: int, db: Session = Depends(get_db)):
 
 # DELETE /posts/{id}
 @app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_post(id: int):
+def delete_post(id: int, db: Session = Depends(get_db)):
     # index, deleted_post = _find_post(id)
     # if not deleted_post:
     #     raise HTTPException(
@@ -112,16 +113,18 @@ def delete_post(id: int):
     # # my_posts = [post for post in my_posts if post["id"] != id]
     # return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-    cursor.execute("""DELETE FROM posts WHERE id = %s RETURNING *;""", (id,))
-    deleted_post = cursor.fetchone()
-    conn.commit()
+    # cursor.execute("""DELETE FROM posts WHERE id = %s RETURNING *;""", (id,))
+    # deleted_post = cursor.fetchone()
+    # conn.commit()
 
-    if not deleted_post:
+    delete_post_query = db.query(models.Post).filter(models.Post.id == id)
+    if not delete_post_query.first():
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Post with id {id} not found or deleted",
         )
-    
+    delete_post_query.delete(synchronize_session=False)
+    db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 # PUT /posts/{id}
