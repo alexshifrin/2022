@@ -35,13 +35,6 @@ while True:
         print("Error: ", error)
         time.sleep(2)
 
-def _find_post(id):
-    for index, post in enumerate(my_posts):
-        if post["id"] == id:
-            return (index, post)
-    else:
-        return (None, None)
-
 # GET root
 @app.get("/")
 def root():
@@ -54,7 +47,7 @@ def get_posts(db: Session = Depends(get_db)):
     return posts
 
 # POST /posts
-@app.post("/posts", status_code=status.HTTP_201_CREATED)
+@app.post("/posts", status_code=status.HTTP_201_CREATED, response_model=schemas.PostResponse)
 def create_posts(post: schemas.PostCreate, db: Session = Depends(get_db)):
     new_post = models.Post(**post.dict())
     db.add(new_post)
