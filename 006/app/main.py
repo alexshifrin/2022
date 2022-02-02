@@ -56,7 +56,7 @@ def create_posts(post: schemas.PostCreate, db: Session = Depends(get_db)):
     return new_post
 
 # GET /posts/{id}
-@app.get("/posts/{id}")
+@app.get("/posts/{id}", response_model=schemas.PostResponse)
 def get_post(id: int, db: Session = Depends(get_db)):
     matched_post = db.query(models.Post).filter(models.Post.id == id).first()
     if not matched_post:
@@ -80,7 +80,7 @@ def delete_post(id: int, db: Session = Depends(get_db)):
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 # PUT /posts/{id}
-@app.put("/posts/{id}")
+@app.put("/posts/{id}", response_model=schemas.PostResponse)
 def update_post(id: int, post: schemas.PostCreate, db: Session = Depends(get_db)):
     update_post_query = db.query(models.Post).filter(models.Post.id == id)
     updated_post = update_post_query.first()
