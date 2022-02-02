@@ -129,21 +129,28 @@ def delete_post(id: int, db: Session = Depends(get_db)):
 
 # PUT /posts/{id}
 @app.put("/posts/{id}")
-def update_post(id: int, post: Post):
-    cursor.execute(
-        """UPDATE posts SET title = %s, content = %s, published = %s WHERE id = %s RETURNING *;""",
-        (post.title, post.content, post.published, id)
-    )
-    updated_post = cursor.fetchone()
-    conn.commit()
+def update_post(id: int, post: Post, db: Session = Depends(get_db)):
+    # cursor.execute(
+    #     """UPDATE posts SET title = %s, content = %s, published = %s WHERE id = %s RETURNING *;""",
+    #     (post.title, post.content, post.published, id)
+    # )
+    # updated_post = cursor.fetchone()
+    # conn.commit()
+
+    update_post_query = db.query(models.Post).filter(models.Post.id == id)
+
+    updated_post = update_post_query.first()
 
     if updated_post is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Post with {id} not found to update",
+            detail=f"Post with id {id} not found to update",
         )
+    
+    update_post_query.update(post.dict(), synchronize_session=False)
+    db.commit()
 
-    return {"message": "updated post!", "post": updated_post}
+    return {"message": "updated post!", "post": update_post_query.first()}
 
 @app.get("/sqlalchemy")
 def test_posts(db: Session = Depends(get_db)):
