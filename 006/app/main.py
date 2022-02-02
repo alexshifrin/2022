@@ -1,3 +1,4 @@
+from nis import match
 import time
 from os import stat
 from typing import Optional
@@ -84,17 +85,18 @@ def create_posts(post: Post, db: Session = Depends(get_db)):
 
 # GET /posts/{id}
 @app.get("/posts/{id}")
-def get_post(id: int):
-    cursor.execute("""SELECT * FROM posts WHERE id = %s;""", (id,))
-    post = cursor.fetchone()
+def get_post(id: int, db: Session = Depends(get_db)):
+    # cursor.execute("""SELECT * FROM posts WHERE id = %s;""", (id,))
+    # post = cursor.fetchone()
 
-    if not post:
+    matched_post = db.query(models.Post).filter(models.Post.id == id).first()
+
+    if not matched_post:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Post with id {id} not found",
         )
-
-    return {"data": post}
+    return {"data": matched_post}
 
 # DELETE /posts/{id}
 @app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
