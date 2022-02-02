@@ -1,7 +1,4 @@
-from multiprocessing import synchronize
-from nis import match
 import time
-from os import stat
 from typing import Optional
 
 import psycopg2
