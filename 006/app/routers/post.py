@@ -17,8 +17,7 @@ def get_posts(db: Session = Depends(get_db)):
 
 # POST /posts
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.PostResponse)
-def create_posts(post: schemas.PostCreate, db: Session = Depends(get_db), user_id: int = Depends(oauth2.get_current_user)):
-    print(user_id)
+def create_posts(post: schemas.PostCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     new_post = models.Post(**post.dict())
     db.add(new_post)
     db.commit()
@@ -27,7 +26,7 @@ def create_posts(post: schemas.PostCreate, db: Session = Depends(get_db), user_i
 
 # GET /posts/{id}
 @router.get("/{id}", response_model=schemas.PostResponse)
-def get_post(id: int, db: Session = Depends(get_db), user_id: int = Depends(oauth2.get_current_user)):
+def get_post(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     matched_post = db.query(models.Post).filter(models.Post.id == id).first()
     if not matched_post:
         raise HTTPException(
@@ -38,7 +37,7 @@ def get_post(id: int, db: Session = Depends(get_db), user_id: int = Depends(oaut
 
 # DELETE /posts/{id}
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_post(id: int, db: Session = Depends(get_db), user_id: int = Depends(oauth2.get_current_user)):
+def delete_post(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     delete_post_query = db.query(models.Post).filter(models.Post.id == id)
     if not delete_post_query.first():
         raise HTTPException(
@@ -51,7 +50,7 @@ def delete_post(id: int, db: Session = Depends(get_db), user_id: int = Depends(o
 
 # PUT /posts/{id}
 @router.put("/{id}", response_model=schemas.PostResponse)
-def update_post(id: int, post: schemas.PostCreate, db: Session = Depends(get_db), user_id: int = Depends(oauth2.get_current_user)):
+def update_post(id: int, post: schemas.PostCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     update_post_query = db.query(models.Post).filter(models.Post.id == id)
     updated_post = update_post_query.first()
     if updated_post is None:
