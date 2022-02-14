@@ -35,7 +35,7 @@ def verify_access_token(token: str, credentials_exception):
 
 def get_current_user(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
+        status_code=status.HTTP_403_FORBIDDEN,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"}
     )
