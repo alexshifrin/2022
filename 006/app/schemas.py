@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, validator
 
 
 class UserCreate(BaseModel):
@@ -50,3 +50,14 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     id: Optional[str]
+
+
+class Vote(BaseModel):
+    post_id: int
+    dir: int
+
+    @validator("dir")
+    def validate_dir(cls, dir):
+        if dir not in [0, 1]:
+            raise ValueError("dir must be 0 or 1")
+        return dir
